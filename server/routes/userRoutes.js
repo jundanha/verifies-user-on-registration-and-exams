@@ -7,12 +7,18 @@ const Users = require('../models/Users');
 
 router.post('/register', async (req, res) => {
   try {
+    const username = await Users.findOne({ username: req.body.username });
+    if (username) return res.status(400).json({ error: 'Username already exists' });
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // TODO: save photo into cloud
+    let photoLink = req.body.photo;
 
     const user = new Users({
       username: req.body.username,
       password: hashedPassword,
-      photoLink: req.body.photo,
+      photoLink: photoLink,
     });
 
     await user.save();
@@ -43,7 +49,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.userId, { password: 0 });
+    const user = await Users.findById(req.userId, { password: 0 });
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -52,12 +58,15 @@ router.get('/profile', authenticateToken, async (req, res) => {
 });
 
 function authenticateToken(req, res, next) {
-  const token = req.header('Authorization');
+  const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
   jwt.verify(token, 'secretKey', (err, user) => {
-    if (err) return res.status(403).json({ error: 'Forbidden' });
+    if (err) {
+      console.error(err);
+      return res.status(403).json({ error: 'Forbidden' });
+    }
 
     req.userId = user.userId;
     next();
