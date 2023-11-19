@@ -25,18 +25,7 @@ import matplotlib.image as mpimg
 from google.colab import drive
 import shutil
 
-drive.mount('/content/drive', force_remount=True)
-
-# drive_path = '/content/drive/Shared drives/Shared with me/1Tj_Y_vQlmwBqw7YZAxUvzB88I_iwIL04'
-
-# Create the path to the shared folder in Google Drive
-# drive_data_path = '/content/drive/MyDrive/Shared with me/Shared'
-
-# Specify the path to the destination folder in Colab
-# colab_data_path = '../content'
-
-# Create the destination folder in Colab
-# shutil.copytree(drive_path, colab_data_path)
+# drive.mount('/content/drive', force_remount=True)
 
 import zipfile
 
@@ -45,8 +34,8 @@ def unzip_file(zip_file_path, extract_folder):
         zip_ref.extractall(extract_folder)
 
 # Example usage:
-zip_file_path = './drive/MyDrive/train-faces-micro.zip'  # Specify the path to your zip file
-extract_folder = './train-faces-micro'  # Specify the path to the folder where you want to extract the contents
+zip_file_path = '/train-faces-micro.zip'  # Specify the path to your zip file
+extract_folder = '/tmp/train-faces-micro'  # Specify the path to the folder where you want to extract the contents
 
 # Create the extract folder if it doesn't exist
 if not os.path.exists(extract_folder):
@@ -280,14 +269,6 @@ def euclidean_distance_output_shape(shapes):
     shape1, shape2 = shapes
     return (shape1[0], 1)
 
-# def contrastive_loss(y_true, y_pred, margin=1):
-#     # y_true = tf.cast(y_true, dtype=tf.float32)  # Cast y_true to float32
-#     square_pred = K.square(y_pred)
-#     margin_square = K.square(K.maximum(margin - y_pred, 0))
-
-#     loss = 0.5 * (1 - y_true) * square_pred + 0.5 * y_true * margin_square
-#     return K.mean(loss)
-
 def contrastive_loss(y_true, y_pred):
     y_true = K.cast(y_true, dtype=tf.float32)
     y_pred = K.cast(y_pred, dtype=tf.float32)
@@ -442,12 +423,12 @@ y_true = batch_labels
 print("Shape of y_true:", y_true.shape)  # Expected: (batch_size,)
 print("Shape of y_pred:", y_pred.shape)  # Expected: (batch_size, 1)
 
-from keras.callbacks import Callback
+# from keras.callbacks import Callback
 
-class PrintShapeCallback(Callback):
-    def on_batch_end(self, batch, logs=None):
-        print("Shape of y_true:", logs.get('y_true').shape)
-        print("Shape of y_pred:", logs.get('y_pred').shape)
+# class PrintShapeCallback(Callback):
+#     def on_batch_end(self, batch, logs=None):
+#         print("Shape of y_true:", logs.get('y_true').shape)
+#         print("Shape of y_pred:", logs.get('y_pred').shape)
 
 batch_size = 32
 
@@ -467,13 +448,6 @@ siamese_model.fit_generator(train_generator,
                             validation_steps=validation_steps)
 
 # Save the model to the local Colab environment
-siamese_model.save('/content/saved_model')
-
-import shutil
-
-# Move the saved_model directory to Google Drive
-shutil.move('/content/saved_model', '/content/drive/MyDrive/Faces-training/tl_model')
-
 siamese_model.save('/content/drive/MyDrive/Faces-training/model_tl2.h5')
 
 # Assuming siamese_model is already trained
@@ -495,47 +469,3 @@ prediction = siamese_model.predict([test_image_1, test_image_2])
 
 # Print the prediction
 print("Similarity Score:", prediction[0][0])
-
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-test_datagen = ImageDataGenerator(rescale=1./255)
-
-# Assuming you have a testing directory with subdirectories 'original' and 'forged'
-# Adjust the paths based on your actual directory structure
-test_dir = "./drive/MyDrive/Faces-Dataset/val_folder"
-test_generator = test_datagen.flow_from_directory(
-    test_dir,
-    target_size=(224, 224, 3),  # Adjust based on your input shape
-    batch_size=1,
-    class_mode="binary",  # Assuming it's a binary classification (original/forged)
-    shuffle=False
-)
-
-# Function to plot images
-def plot_images(images, title):
-    plt.figure(figsize=(10, 5))
-    for i in range(len(images)):
-        plt.subplot(1, len(images), i + 1)
-        plt.imshow(images[i])
-        plt.axis("off")
-    plt.suptitle(title)
-    plt.show()
-
-# Iterate through the test generator
-for i in range(len(test_generator)):
-    x, label = test_generator[i]
-
-    # Assuming x is a tuple with a single element (the image)
-    x0 = x[0]
-
-    # Forward pass
-    output1, output2 = siamese_model.predict([x0, x0])  # Note: You might want to change x0, x0 to x0, x1
-
-    # Calculate Euclidean distance
-    euclidean_distance = np.linalg.norm(output1 - output2)
-
-    # Convert label tensor to string
-    label_str = "Original Pair Of Signature" if label[0] == 0 else "Forged Pair Of Signature"
-
-    # Display the pair and model prediction
-    plot_images([x0], f"Actual Label: {label_str}\nPredicted Euclidean Distance: {euclidean_distance}")
