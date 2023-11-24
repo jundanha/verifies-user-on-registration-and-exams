@@ -16,6 +16,7 @@ function RegisterPage() {
         alignItems="center"
         justifyContent="center"
         h="100vh"
+        w='100vw'
       >
         <Box w="md" p={8} borderWidth={1} borderRadius={8} boxShadow="lg">
           <Heading mb={4}>Register</Heading>
