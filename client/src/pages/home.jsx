@@ -1,9 +1,5 @@
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
-<<<<<<< HEAD
 import { Link as RouterLink} from 'react-router-dom';
-=======
-import { Link as RouterLink } from 'react-router-dom';
->>>>>>> 96a629238b5a00b2f5a5066e96a49f9a945d9f32
 
 function HomePage() {
   return (
