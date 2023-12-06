@@ -107,6 +107,10 @@ def submit_face():
 
         exam_ref.update({'faceAtExam': photo_url})
 
+        # TODO: Call face recognition API
+
+        # TODO: update exam_ref with faceResult, isMatch
+
         return jsonify({'message': 'Face image submitted'}), 200
 
     except Exception as e:
@@ -147,6 +151,9 @@ def get_exam():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# TODO: Define the API to add activity into an exam
+
 
 if __name__ == '__main__':
     app.run(debug=True)
