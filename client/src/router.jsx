@@ -7,6 +7,8 @@ import StreamVideoPage from './pages/streamvideo';
 import Layout from './layout';
 import NotFoundPage from './pages/notfound';
 import HomePage from './pages/home';
+import StartExamPage from './pages/startexam';
+import getTokenPage from './pages/gettoken';
 
 export function AppRouter() {
   const router = createBrowserRouter([
@@ -21,6 +23,8 @@ export function AppRouter() {
           { path: '/photoverif', element: <PhotoVerifPage /> },
           { path: '/faceregister', element: <FaceRegisterPage /> },
           { path: '/streamvideo', element: <StreamVideoPage /> },
+          { path: '/startexam', element: <StartExamPage /> },
+          { path: '/gettoken', element: <getTokenPage /> },
           { path: '*', element: <NotFoundPage /> }
         ]
       }]
