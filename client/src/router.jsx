@@ -11,6 +11,7 @@ import StartExamPage from './pages/startexam';
 import getTokenPage from './pages/gettoken';
 import ExamHistoryPage from './pages/examhistory';
 import ExamDetailPage from './pages/examdetail';
+import NewExamPage from './pages/newexam';
 
 export function AppRouter() {
   const router = createBrowserRouter([
@@ -28,10 +29,8 @@ export function AppRouter() {
           { path: '/startexam', element: <StartExamPage /> },
           { path: '/gettoken', element: <getTokenPage /> },
           { path: '/examhistory', element: <ExamHistoryPage />},
-          {
-            path: '/examhistory/:examID',
-            element: <ExamDetailPage />
-          },
+          { path: '/newexam', element: <NewExamPage />},
+          { path: '/examhistory/:examID', element: <ExamDetailPage />},
           { path: '*', element: <NotFoundPage /> }
         ]
       }]
