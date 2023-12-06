@@ -1,4 +1,5 @@
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Link as RouterLink } from 'react-router-dom';
 
 function HomePage() {
   return (
@@ -92,6 +93,8 @@ function HomePage() {
             size="lg"
             w="400px"
             m='4'
+            as={RouterLink}
+            to='/examhistory'
           >
             View Exam History
           </Button>
