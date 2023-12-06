@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eye Gaze Prediction</title>
+    <!-- ... (existing code) ... -->
   </head>
   <body>
     <h1>Eye Gaze Prediction</h1>
@@ -17,13 +15,25 @@
       <h2>Predictions:</h2>
       <p id="predictions">Loading...</p>
     </div>
+
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- Add the following script at the end of the body -->
     <script>
-      const eventSource = new EventSource("/video_feed");
-      eventSource.onmessage = function (event) {
-        const predictionsElement = document.getElementById("predictions");
-        predictionsElement.innerText = event.data;
-        console.log(event.data); // Print predictions in the console
-      };
+      // Function to update the predictions element with new data
+      function updatePredictions(predictions) {
+        document.getElementById("predictions").innerText =
+          "Predictions: " + predictions;
+      }
+
+      // Start WebSocket connection to update predictions in real-time
+      const socket = io.connect(
+        "http://" + document.domain + ":" + location.port
+      );
+      socket.on("predictions", function (data) {
+        updatePredictions(data);
+      });
     </script>
   </body>
 </html>
