@@ -24,7 +24,7 @@ def generate_frame():
         eye_gaze = model.predict(normalize_frame)
 
         # Convert the predictions to a string for display
-        eye_gaze_str = str(eye_gaze[0][0])
+        eye_gaze_str = str(eye_gaze[0])
 
         # Encode the frame as JPEG
         _, jpeg_frame = cv2.imencode('.jpg', frame)
