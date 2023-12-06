@@ -20,3 +20,5 @@ function getTokenPage() {
       </>
     )
   }
+
+export default getTokenPage
