@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eye Gaze Prediction</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Eye Gaze Prediction</h1>
-    <img src="{{ url_for('video_feed') }}" width="640" height="480" style="border:1px solid #000;">
+    <img
+      src="{{ url_for('video_feed') }}"
+      width="640"
+      height="480"
+      style="border: 1px solid #000"
+    />
     <div>
-        <h2>Predictions:</h2>
-        <p id="predictions">Loading...</p>
+      <h2>Predictions:</h2>
+      <p id="predictions">Loading...</p>
     </div>
-</body>
+    <script>
+      const eventSource = new EventSource("/video_feed");
+      eventSource.onmessage = function (event) {
+        const predictionsElement = document.getElementById("predictions");
+        predictionsElement.innerText = event.data;
+        console.log(event.data); // Print predictions in the console
+      };
+    </script>
+  </body>
 </html>
