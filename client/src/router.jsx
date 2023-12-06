@@ -8,6 +8,7 @@ import Layout from './layout';
 import NotFoundPage from './pages/notfound';
 import HomePage from './pages/home';
 import ExamHistoryPage from './pages/examhistory';
+import ExamDetailPage from './pages/examdetail';
 
 export function AppRouter() {
   const router = createBrowserRouter([
@@ -23,6 +24,10 @@ export function AppRouter() {
           { path: '/faceregister', element: <FaceRegisterPage /> },
           { path: '/streamvideo', element: <StreamVideoPage /> },
           { path: '/examhistory', element: <ExamHistoryPage />},
+          {
+            path: '/examhistory/:examID',
+            element: <ExamDetailPage />
+          },
           { path: '*', element: <NotFoundPage /> }
         ]
       }]

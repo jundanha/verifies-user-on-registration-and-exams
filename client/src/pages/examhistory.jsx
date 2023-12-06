@@ -114,6 +114,8 @@ function ExamHistoryPage() {
             </Box>
             <Button
               variant='outline'
+              as={RouterLink}
+              to={`/examhistory/${exam.examID}`}
             >
               Details
             </Button>
