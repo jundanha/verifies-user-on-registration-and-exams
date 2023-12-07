@@ -1,8 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import LoginPage from './pages/login';
-import RegisterPage from './pages/register';
-import PhotoVerifPage from './pages/photoverif';
-import FaceRegisterPage from './pages/faceregister';
 import StreamVideoPage from './pages/streamvideo';
 import Layout from './layout';
 import NotFoundPage from './pages/notfound';
@@ -20,10 +16,6 @@ export function AppRouter() {
         element: <Layout />,
         children: [
           { path: '/', element: <HomePage /> },
-          { path: '/login', element: <LoginPage /> },
-          { path: '/register', element: <RegisterPage /> },
-          { path: '/photoverif', element: <PhotoVerifPage /> },
-          { path: '/faceregister', element: <FaceRegisterPage /> },
           { path: '/streamvideo', element: <StreamVideoPage /> },
           { path: '/startexam', element: <StartExamPage /> },
           { path: '/examhistory', element: <ExamHistoryPage />},
