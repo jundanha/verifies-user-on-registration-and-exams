@@ -76,6 +76,8 @@ function HomePage() {
               size="lg"
               w="250px"
               mx='4'
+              as={RouterLink}
+              to='/newexam'
             >
               New Exam
             </Button>
