@@ -39,7 +39,20 @@ function NewExamPage() {
   
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { onCopy, value, setValue, hasCopied } = useClipboard("");
-  
+    <Modal isOpen={isOpen} onClose={onClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Token</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        token-12345
+      </ModalBody>
+
+      <ModalFooter>
+      <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
   
     return (
       <ChakraProvider>
@@ -56,21 +69,6 @@ function NewExamPage() {
               ref={videoRef}
               style={{ width: '100%', height: 'auto' }}
             />
-    
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Token</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          token-12345
-        </ModalBody>
-
-        <ModalFooter>
-        <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
             <Button 
                 onClick={onOpen} 
                 colorScheme="blue" 
