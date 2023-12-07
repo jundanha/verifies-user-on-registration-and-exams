@@ -3,30 +3,26 @@ import { useEffect, useState } from "react"
 import { Link as RouterLink } from 'react-router-dom';
 
 function ExamHistoryPage() {
-  const dummy = [
-    {
-      examID : "aGHaV1YLaNnyhLTfzfNT",
-      isTaken : true,
-    },
-    {
-      examID : "aGHaV1YLaNnyhLTfzfNT",
-      isTaken : true,
-    },
-    {
-      examID : "aGHaV1YLaNnyhLTfzfNT",
-      isTaken : false,
-    },
-    {
-      examID : "aGHaV1YLaNnyhLTfzfNT",
-      isTaken : true,
-    }
-  ]
-
   const [examHistory, setExamHistory] = useState([])
 
   useEffect(() => {
-    setExamHistory(dummy)
-  }, [])
+    const fetchExamHistory = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/list_exams');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch exam history. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data.exams);
+        setExamHistory(data.exams);
+      } catch (error) {
+        console.error('Error fetching exam history:', error);
+      }
+    };
+
+    fetchExamHistory();
+  }, []);
 
   return (
     <Box
@@ -73,7 +69,7 @@ function ExamHistoryPage() {
         h='80vh'
         overflow={"auto"}
       >
-        {examHistory.map((exam, index) => (
+        { examHistory.map((exam, index) => (
           <Card
             key={index}
             w='100%'
