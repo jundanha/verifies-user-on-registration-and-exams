@@ -9,6 +9,7 @@ import {
   Center
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
+import { Link as RouterLink} from 'react-router-dom';
 
 function StartExamPage() {
   function validateToken(value) {
@@ -52,6 +53,8 @@ function StartExamPage() {
                 colorScheme="teal"
                 isLoading={props.isSubmitting}
                 type="submit"
+                as={RouterLink}
+                to='/faceregister'
               >
                 Start Exam
               </Button>
