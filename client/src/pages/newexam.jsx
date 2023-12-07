@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { ChakraProvider, Center, VStack, Button } from '@chakra-ui/react';
+import { ChakraProvider, Center, VStack, Button, Box } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 import Webcam from 'react-webcam';
 
 function NewExamPage() {
@@ -20,7 +21,6 @@ function NewExamPage() {
       enableCamera();
   
       return () => {
-        // Clean up and stop the camera when component unmounts
         if (videoRef.current && videoRef.current.srcObject) {
           const tracks = videoRef.current.srcObject.getTracks();
           tracks.forEach(track => track.stop());
@@ -29,12 +29,17 @@ function NewExamPage() {
     }, []);
   
     const handleRegisterExam = () => {
-      // Handle registration logic here
       console.log('Exam registered!');
     };
   
     return (
       <ChakraProvider>
+        <Box position="absolute" top="10px" left="10px">
+            <Button 
+                variant='outline'
+                as={RouterLink}
+                to="/">Back</Button>
+        </Box>
         <Center h="100vh">
           <VStack>
             <Webcam
@@ -42,7 +47,12 @@ function NewExamPage() {
               ref={videoRef}
               style={{ width: '100%', height: 'auto' }}
             />
-            <Button onClick={handleRegisterExam} colorScheme="blue" size="lg">
+            <Button 
+                onClick={handleRegisterExam} 
+                colorScheme="blue" 
+                size="lg"
+                as={RouterLink}
+                to='/gettoken'>
               Register Exam
             </Button>
           </VStack>
