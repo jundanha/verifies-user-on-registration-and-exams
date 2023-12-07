@@ -1,7 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { ChakraProvider, Center, VStack, Button, Box } from '@chakra-ui/react';
+import { useClipboard, ChakraProvider, Center, VStack, Button, Box, useDisclosure } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import Webcam from 'react-webcam';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react'
 
 function NewExamPage() {
     const videoRef = useRef();
@@ -28,9 +37,9 @@ function NewExamPage() {
       };
     }, []);
   
-    const handleRegisterExam = () => {
-      console.log('Exam registered!');
-    };
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { onCopy, value, setValue, hasCopied } = useClipboard("");
+  
   
     return (
       <ChakraProvider>
@@ -47,12 +56,25 @@ function NewExamPage() {
               ref={videoRef}
               style={{ width: '100%', height: 'auto' }}
             />
+    
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Token</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          token-12345
+        </ModalBody>
+
+        <ModalFooter>
+        <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
             <Button 
-                onClick={handleRegisterExam} 
+                onClick={onOpen} 
                 colorScheme="blue" 
-                size="lg"
-                as={RouterLink}
-                to='/gettoken'>
+                size="lg">
               Register Exam
             </Button>
           </VStack>

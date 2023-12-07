@@ -8,7 +8,6 @@ import Layout from './layout';
 import NotFoundPage from './pages/notfound';
 import HomePage from './pages/home';
 import StartExamPage from './pages/startexam';
-import getTokenPage from './pages/gettoken';
 import ExamHistoryPage from './pages/examhistory';
 import ExamDetailPage from './pages/examdetail';
 import NewExamPage from './pages/newexam';
@@ -27,7 +26,6 @@ export function AppRouter() {
           { path: '/faceregister', element: <FaceRegisterPage /> },
           { path: '/streamvideo', element: <StreamVideoPage /> },
           { path: '/startexam', element: <StartExamPage /> },
-          { path: '/gettoken', element: <getTokenPage /> },
           { path: '/examhistory', element: <ExamHistoryPage />},
           { path: '/newexam', element: <NewExamPage />},
           { path: '/examhistory/:examID', element: <ExamDetailPage />},
