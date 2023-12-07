@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from google.cloud import storage
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -6,6 +7,7 @@ import os
 import uuid
 
 app = Flask(__name__)
+CORS(app)
 
 credential_path = os.path.abspath("credentials.json")
 
@@ -67,7 +69,7 @@ def start_exam():
         exam_docs = exam_ref.get()
 
         if len(exam_docs) == 0:
-            return jsonify({'error': 'Exam not found'}), 404
+            return jsonify({'error': 'Invalid Token. Exam not found'}), 404
 
         exam_doc = exam_docs[0]
 
