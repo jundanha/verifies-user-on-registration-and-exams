@@ -1,5 +1,5 @@
 import { Box, Button, Card, Heading, Text } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link as RouterLink } from 'react-router-dom';
 
 function ExamHistoryPage() {
@@ -22,7 +22,11 @@ function ExamHistoryPage() {
     }
   ]
 
-  const [examHistory, setExamHistory] = useState(dummy)
+  const [examHistory, setExamHistory] = useState([])
+
+  useEffect(() => {
+    setExamHistory(dummy)
+  }, [])
 
   return (
     <Box

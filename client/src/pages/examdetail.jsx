@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./notfound";
 import { Link as RouterLink } from 'react-router-dom';
@@ -78,7 +78,11 @@ function ExamDetailPage() {
   }
 
   const { examID } = useParams();
-  const [ exam, setExam ] = useState(dummy);
+  const [ exam, setExam ] = useState();
+
+  useEffect(() => {
+    setExam(dummy)
+  }, [])
 
   if (!exam) {
     return (
