@@ -21,6 +21,7 @@ function NewExamPage() {
   const [selectedCamera, setSelectedCamera] = useState('');
   const [isCaptureDisabled, setCaptureDisabled] = useState(false);
   const [isRegisterDisabled, setRegisterDisabled] = useState(true);
+  const [isRegisterLoading, setRegisterLoading] = useState(false);
 
   useEffect(() => {
     const enableCamera = async () => {
@@ -76,10 +77,55 @@ function NewExamPage() {
     console.log(imageSrc);
   };
 
-  const registerExam = () => {
-    // Implement registration logic here
-    console.log('Exam registered!');
+  const registerExam = async () => {
+    try {
+      setRegisterLoading(true);
+      const base64toBlob = (base64) => {
+        const byteCharacters = atob(base64.split(',')[1]);
+        const byteArrays = [];
+  
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+          const slice = byteCharacters.slice(offset, offset + 512);
+  
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+  
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+  
+        return new Blob(byteArrays, { type: 'image/jpeg' });
+      };
+  
+      const imageBlob = base64toBlob(capturedImage);
+  
+      const formData = new FormData();
+      formData.append('photo', imageBlob, 'captured_image.jpg'); 
+      
+      // TODO : change the url to the deployed backend
+      const response = await fetch('http://localhost:5000/create_exam', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to register exam. Status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log(result);
+  
+      setValue(result.token);
+      onOpen();
+    } catch (error) {
+      console.error('Error registering exam:', error);
+    } finally {
+      setRegisterLoading(false);
+    }
   };
+  
 
   useEffect(() => {
     getAvailableCameras();
@@ -203,25 +249,48 @@ function NewExamPage() {
           <Box mb={4}>
             <Button
               colorScheme="blue"
-              onClick={onOpen}
+              onClick={registerExam}
               width={600}
               isDisabled={isRegisterDisabled}
+              isLoading={isRegisterLoading}
             >
               Register Exam
             </Button>
           </Box>
         </Box>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} 
+        isCentered
+        motionPreset="slideInBottom"
+        size="xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Token</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            token-12345
+            {hasCopied ? "Copied!" : "Copy the token below and paste it in the exam page."}
+            <Box
+              bg="gray.100"
+              p={4}
+              mt={4}
+              borderRadius="md"
+              fontFamily="monospace"
+              wordBreak="break-all"
+            >
+              {value}
+            </Box>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
+            <Button
+              colorScheme="blue"
+              as={RouterLink}
+              to='/startexam'
+              mx='2'
+            >
+              Start the Exam
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
