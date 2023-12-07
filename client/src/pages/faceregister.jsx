@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { ChakraProvider, VStack, Box, Button } from '@chakra-ui/react';
+import { ChakraProvider, Center, VStack, Box, Button, Flex } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 import Webcam from 'react-webcam';
 
 function FaceRegister() {
@@ -16,20 +17,32 @@ function FaceRegister() {
 
   return (
     <ChakraProvider>
-      <VStack spacing={4} align="center">
-        <Box w="80%" h="auto">
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            style={{ width: '100%', height: 'auto' }}
-            screenshotFormat="image/jpeg"
-          />
+      <Flex direction="column" align="center">
+        <Box position="absolute" top="10px" left="10px">
+          <Button 
+            variant='outline'
+            as={RouterLink}
+            to="/">Back</Button>
         </Box>
-        <Box>{textOutput}</Box>
-        <Button colorScheme="blue" size="lg" onClick={capture}>
+        <Center h="15vh"></Center>
+          <VStack></VStack>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              style={{ width: '100%', height: 'auto' }}
+              screenshotFormat="image/jpeg"
+            />
+        <Box mt={4} fontSize="lg">match value:</Box>
+        <Button 
+          colorScheme="blue" 
+          size="lg" 
+          mt={4} 
+          onClick={capture}
+          as={RouterLink}
+          to='/streamvideo'>
           Next
         </Button>
-      </VStack>
+      </Flex>
     </ChakraProvider>
   );
 }
