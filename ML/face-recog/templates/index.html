@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Recognition</title>
+  </head>
+  <body>
+    <h1>Face Recognition</h1>
+
+    <!-- Form to select an image -->
+    <form id="imageForm" enctype="multipart/form-data">
+      <label for="image">Select an image:</label>
+      <input type="file" id="image" name="image" accept="image/*" />
+      <button type="button" onclick="uploadImage()">Upload Image</button>
+    </form>
+
+    <!-- Video feed display -->
+    <div>
+      <img
+        id="videoFeed"
+        src="/video_feed"
+        alt="Video Feed"
+        style="width: 640px; height: 480px"
+      />
+    </div>
+    <script>
+      // Function to upload the selected image
+      function uploadImage() {
+        const formData = new FormData(document.getElementById("imageForm"));
+
+        // Send a POST request to the /select_image endpoint
+        fetch("/select_image", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((message) => {
+            console.log(message);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+    <div>
+      <h2>Predictions:</h2>
+      <p id="predictions">Loading...</p>
+    </div>
+
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- Add the following script at the end of the body -->
+    <script>
+      // Function to update the predictions element with new data
+      function updatePredictions(predictions) {
+        document.getElementById("predictions").innerText =
+          "Predictions: " + predictions;
+      }
+
+      // Start WebSocket connection to update predictions in real-time
+      const socket = io.connect(
+        "http://" + document.domain + ":" + location.port
+      );
+      socket.on("predictions", function (data) {
+        updatePredictions(data);
+      });
+    </script>
+  </body>
+</html>
