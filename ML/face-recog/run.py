@@ -101,13 +101,26 @@ def preprocess_frame(frame: np.ndarray) -> np.ndarray:
     return normalize_frame
 
 # Function to handle selected image
-def process_selected_image(image_data):
-    global selected_image
-    selected_image = Image.open(BytesIO(image_data))
-    selected_image = selected_image.resize((128, 128))
-    selected_image = np.array(selected_image)
-    # selected_image = np.expand_dims(selected_image, axis=0)
-    selected_image = preprocess_frame(selected_image)
+def process_selected_image(image_data, resize_size=(128, 128)):
+    """
+    Process the selected image.
+
+    Args:
+        image_data (bytes): The image data.
+        resize_size (tuple, optional): The size to resize the image to. Defaults to (128, 128).
+
+    Returns:
+        numpy.ndarray: The processed image.
+    """
+    try:
+        processed_image = Image.open(BytesIO(image_data))
+        processed_image = processed_image.resize(resize_size)
+        processed_image = np.array(processed_image)
+        processed_image = preprocess_frame(processed_image)
+        return processed_image
+    except Exception as e:
+        print(f'Error processing image: {e}')
+        return None
 
 # Modify the `generate_frame` function
 def generate_frame():
