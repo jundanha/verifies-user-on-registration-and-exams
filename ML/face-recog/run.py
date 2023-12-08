@@ -76,13 +76,27 @@ cap = cv2.VideoCapture(0)
 selected_image = None
 
 # Define the function to preprocess the frame
-def preprocess_frame(frame):
+def preprocess_frame(frame: np.ndarray) -> np.ndarray:
+    """
+    Preprocesses an input frame to prepare it for further processing.
+
+    Args:
+        frame: The input frame to be preprocessed.
+
+    Returns:
+        The preprocessed frame ready for further processing.
+    """
     # Convert BGR to RGB
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Preprocess the frame
-    rgb_frame = cv2.resize(rgb_frame, (128, 128))
-    normalize_frame = rgb_frame.reshape(1, 128, 128, 3) / 255.0
+    # Resize the frame to 128x128 pixels
+    resized_frame = cv2.resize(rgb_frame, (128, 128))
+
+    # Normalize the pixel values of the frame
+    normalize_frame = resized_frame.astype(np.float32) / 255.0
+
+    # Reshape the frame to match the expected input shape of the model
+    normalize_frame = np.expand_dims(normalize_frame, axis=0)
 
     return normalize_frame
 
@@ -125,7 +139,7 @@ def generate_frame():
         pred_str = str(distance[0])
 
         # Check the face recognition conditions and print messages
-        if distance[0] < 0.8:
+        if distance[0] < 0.7:
             out_message = 'Match'
         elif distance[0] == 0:
             out_message = 'Pls input Image First'
