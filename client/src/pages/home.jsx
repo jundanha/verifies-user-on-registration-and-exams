@@ -46,16 +46,16 @@ function HomePage() {
             fontFamily={"sans-serif"}
             fontStyle={"italic"}
           >
-            a simple web application to demonstrate face & gesture recognition in real-time
-            (please guys, nanti ini diganti deskripsinya)
-          </Text>
+            <div> Welcome to our prototype website showcasing the user registration and verification during exams, featuring real-time face and gesture recognition.</div>
+            <div>‼️This website is a prototype created solely for demonstration purposes. All functionalities presented here are simulated and aimed at showcasing the potential of these technologies.‼️</div>
+            </Text>
           <Text
             mb={4}
             fontSize="l"
             fontWeight="bold"
             color="white"
             fontFamily={"sans-serif"}
-          >by: Jundan, Agung, Faizah, Kezia</Text>
+          >by: Jundan, Agung, Faiza, Kezia</Text>
         </Box>
         <Box
           display="flex"

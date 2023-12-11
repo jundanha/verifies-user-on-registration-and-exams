@@ -278,44 +278,39 @@ def contrastive_loss(y_true, y_pred):
     loss = K.mean((1 - y_true) * square_pred + y_true * margin_square)
     return loss
 
-# def siamese_model():
-#     input_1 = Input(shape=(224, 224, 3))
-#     input_2 = Input(shape=(224, 224, 3))
+from tensorflow.keras.regularizers import l2
 
-#     shared_model = tf.keras.models.Sequential([
-#         Conv2D(32, (3,3), activation='relu', input_shape=(224,224,3)),
-#         MaxPooling2D(2,2),
-#         Conv2D(64, (3,3), activation='relu'),
-#         MaxPooling2D(2,2),
-#         Flatten(),
-#         Dense(128, activation="relu"),
-#         Dropout(0.5) # kernel_regularizer=regularizers.l2(0.01),
-#     ])
+def siamese_network(input_shape=(128,128,3)):
+    input_1 = Input(shape=input_shape)
+    input_2 = Input(shape=input_shape)
 
-#     # Individual branches for positive and negative pairs
-#     output_1 = shared_model(input_1)
-#     output_2 = shared_model(input_2)
+    # base_model = InceptionV3(weights='imagenet', input_shape=input_shape, include_top=False)
+    base_model = InceptionV3(weights='imagenet', input_shape=(input_shape[0], input_shape[1], 3), include_top=False)
+    # add a global spatial average pooling layer
+    input = Input(input_shape)
+    x = base_model(input)
+    x = GlobalAveragePooling2D()(x)
+    # x = Flatten()(x)
+    # x = tf.keras.layers.BatchNormalization()(x)
+    x = Dense(10, activation='tanh', kernel_regularizer=l2(0.001))(x)
+    # x1 = Dense(1, activation='tanh')(x1)
+    embedding_network = Model(input, x)
 
-#     # Concatenate the outputs of both branches
-#     merged = Concatenate()([output_1, output_2])
+    tower_1 = embedding_network(input_1)
+    tower_2 = embedding_network(input_2)
+    # distance_layer = DistanceLayer()([tower_1, tower_2])
+    merge_layer = Lambda(euclidean_distance, output_shape=(1,))([tower_1, tower_2])
+    # normal_layer = tf.keras.layers.BatchNormalization()(merge_layer)
+    out = Dense(1, activation='sigmoid')(merge_layer)
 
-#     # Additional dense layers for the combined features
-#     x = Dense(64, activation="relu")(merged)
-#     x = Dropout(0.5)(x)
-#     output = Dense(128, activation="linear")(x)
+    model = Model(inputs=[input_1, input_2], outputs=out)
 
-#     # Create the Siamese model
-#     model = Model(inputs=[input_1, input_2], outputs=output)
-
-#     # Compile the model
-#     model.compile(loss=contrastrive_loss, metrics=['acc'], optimizer='adam')
-
-#     model.summary()
-
-#     return model
-
-# # Create the Siamese model
-# siamese_model = siamese_model()
+    for layer in base_model.layers:
+      layer.trainable = False
+    # for layer in base_model.layers[289:]:
+    #   layer.trainable = True
+    
+    return model
 
 from keras.layers import GlobalAveragePooling2D
 # Base convolutional model
