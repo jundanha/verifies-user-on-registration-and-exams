@@ -28,7 +28,7 @@ function StartExamPage() {
       console.log(responseData)
 
       if (response.ok) {
-        window.location.href = '/exam';
+        window.location.href = '/facerecognition';
       } else {
         actions.setFieldError('token', responseData.error || "Token doesn't exist");
       }
