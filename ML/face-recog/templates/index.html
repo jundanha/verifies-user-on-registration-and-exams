@@ -24,6 +24,56 @@
         style="width: 640px; height: 480px"
       />
     </div>
+    <video id="videoFeed" autoplay></video>
+    <script>
+      // Function to start the webcam and capture frames
+      function startWebcam() {
+        // Get the video element
+        const video = document.getElementById("videoFeed");
+
+        // Check if the browser supports getUserMedia
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // Request access to the webcam
+          navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+              // Set the video source to the webcam stream
+              video.srcObject = stream;
+
+              // Create a canvas element to capture frames
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d");
+
+              // Function to capture frames
+              function captureFrame() {
+                // Set the canvas dimensions to match the video
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                // Draw the current video frame on the canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Get the image data from the canvas
+                const imageData = canvas.toDataURL("image/jpeg");
+
+                // Do something with the captured frame (e.g., send it to the server)
+                // ...
+
+                // Schedule the next frame capture
+                requestAnimationFrame(captureFrame);
+              }
+
+              // Start capturing frames
+              requestAnimationFrame(captureFrame);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        } else {
+          console.error("getUserMedia is not supported");
+        }
+      }
+    </script>
     <script>
       // Function to upload the selected image
       function uploadImage() {
