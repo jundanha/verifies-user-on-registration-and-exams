@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Recognition</title>
+  </head>
+  <body>
+    <h1>Face Recognition</h1>
+
+    <!-- Form to select an image -->
+    <form id="imageForm" enctype="multipart/form-data">
+      <label for="image">Select an image:</label>
+      <input type="file" id="image" name="image" accept="image/*" />
+      <button type="button" onclick="uploadImage()">Upload Image</button>
+    </form>
+
+    <!-- Video feed display -->
+    <div>
+      <img
+        id="videoFeed"
+        src="/video_feed"
+        alt="Video Feed"
+        style="width: 640px; height: 480px"
+      />
+    </div>
+    <video id="videoFeed" autoplay></video>
+    <script>
+      // Function to start the webcam and capture frames
+      function startWebcam() {
+        // Get the video element
+        const video = document.getElementById("videoFeed");
+
+        // Check if the browser supports getUserMedia
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // Request access to the webcam
+          navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+              // Set the video source to the webcam stream
+              video.srcObject = stream;
+
+              // Create a canvas element to capture frames
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d");
+
+              // Function to capture frames
+              function captureFrame() {
+                // Set the canvas dimensions to match the video
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                // Draw the current video frame on the canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Get the image data from the canvas
+                const imageData = canvas.toDataURL("image/jpeg");
+
+                // Do something with the captured frame (e.g., send it to the server)
+                // ...
+
+                // Schedule the next frame capture
+                requestAnimationFrame(captureFrame);
+              }
+
+              // Start capturing frames
+              requestAnimationFrame(captureFrame);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        } else {
+          console.error("getUserMedia is not supported");
+        }
+      }
+    </script>
+    <script>
+      // Function to upload the selected image
+      function uploadImage() {
+        const formData = new FormData(document.getElementById("imageForm"));
+
+        // Send a POST request to the /select_image endpoint
+        fetch("/select_image", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((message) => {
+            console.log(message);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+    <div>
+      <h2>Predictions:</h2>
+      <p id="predictions">Loading...</p>
+    </div>
+
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- Add the following script at the end of the body -->
+    <script>
+      // Function to update the predictions element with new data
+      function updatePredictions(predictions) {
+        document.getElementById("predictions").innerText =
+          "Predictions: " + predictions;
+      }
+
+      // Start WebSocket connection to update predictions in real-time
+      const socket = io.connect(
+        "http://" + document.domain + ":" + location.port
+      );
+      socket.on("predictions", function (data) {
+        updatePredictions(data);
+      });
+    </script>
+  </body>
+</html>
