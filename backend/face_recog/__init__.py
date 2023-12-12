@@ -1,0 +1,1 @@
+#to compile FaceCheck.py module inside face_recog dir

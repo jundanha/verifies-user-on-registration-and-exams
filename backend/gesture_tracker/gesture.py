@@ -8,14 +8,15 @@ There are three major steps:
 For more details, please refer to:
 https://github.com/yinguobing/head-pose-estimation
 """
-from argparse import ArgumentParser
+# from argparse import ArgumentParser
 
 import cv2
 
-from face_detection import FaceDetector
-from mark_detection import MarkDetector
-from pose_estimation import PoseEstimator
-from utils import refine
+from .face_detection import FaceDetector
+from .mark_detection import MarkDetector
+from .pose_estimation import PoseEstimator
+from .utils import refine
+import os
 
 # Parse arguments from user input.
 # parser = ArgumentParser()
@@ -29,6 +30,15 @@ from utils import refine
 # print(__doc__)
 # print("OpenCV version: {}".format(cv2.__version__))
 
+
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Specify the relative path to the ONNX model file
+relative_path1 = "assets/face_detector.onnx"
+relative_path2 = "assets/face_landmarks.onnx"
+face_model_path = os.path.join(current_dir, relative_path1)
+mark_model_path = os.path.join(current_dir, relative_path2)
 
 def run_head_pose_estimation(src):
     # Before estimation started, there are some startup works to do.
@@ -44,10 +54,10 @@ def run_head_pose_estimation(src):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     # Setup a face detector to detect human faces.
-    face_detector = FaceDetector("assets/face_detector.onnx")
+    face_detector = FaceDetector(face_model_path)
 
     # Setup a mark detector to detect landmarks.
-    mark_detector = MarkDetector("assets/face_landmarks.onnx")
+    mark_detector = MarkDetector(mark_model_path)
 
     # Setup a pose estimator to solve pose.
     pose_estimator = PoseEstimator(frame_width, frame_height)
@@ -129,5 +139,5 @@ def run_head_pose_estimation(src):
             break
     # return frame
 
-# if __name__ == '__main__':
-#     run_head_pose_estimation()
+if __name__ == '__main__':
+    run_head_pose_estimation()
