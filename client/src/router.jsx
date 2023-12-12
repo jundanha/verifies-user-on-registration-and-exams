@@ -8,6 +8,7 @@ import ExamHistoryPage from './pages/examhistory';
 import ExamDetailPage from './pages/examdetail';
 import NewExamPage from './pages/newexam';
 import FaceRecognitonPage from './pages/facerecognition';
+import UploadVideoPage from './pages/uploadvideo';
 
 export function AppRouter() {
   const router = createBrowserRouter([
@@ -21,6 +22,7 @@ export function AppRouter() {
           { path: '/startexam', element: <StartExamPage /> },
           { path: '/facerecognition', element: <FaceRecognitonPage />},
           { path: '/streamvideo', element: <StreamVideoPage /> },
+          { path: '/uploadvideo', element: <UploadVideoPage /> },
           { path: '/examhistory', element: <ExamHistoryPage />},
           { path: '/examhistory/:examID', element: <ExamDetailPage />},
           { path: '*', element: <NotFoundPage /> }

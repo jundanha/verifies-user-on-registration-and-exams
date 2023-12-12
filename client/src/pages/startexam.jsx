@@ -28,6 +28,7 @@ function StartExamPage() {
       console.log(responseData)
 
       if (response.ok) {
+        localStorage.setItem('examID', responseData.examID);
         window.location.href = '/facerecognition';
       } else {
         actions.setFieldError('token', responseData.error || "Token doesn't exist");
