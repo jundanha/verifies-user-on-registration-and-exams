@@ -49,6 +49,7 @@ def create_exam():
             'faceAtExam': '',
             'faceResult': '',
             'isMatch': None,
+            'videoLink': '',
             'activity': []
         }
 
@@ -109,11 +110,16 @@ def submit_face():
 
         exam_ref.update({'faceAtExam': photo_url})
 
+
+
         # TODO: Call face recognition API
+        # result, isMatch = generate_frame(photo1, photo2)
+
+        # return jsonify({'message': 'Face image submitted', 'faceResult': result, 'isMatch': isMatch}), 200
 
         # TODO: update exam_ref with faceResult, isMatch
 
-        return jsonify({'message': 'Face image submitted'}), 200
+        # return jsonify({'message': 'Face image submitted'}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -154,7 +160,81 @@ def get_exam():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# TODO: Define the API to add activity into an exam
+@app.route('/add_activity', methods=['POST'])
+def add_activity():
+    try:
+        exam_id = request.form['examID']
+        timestamp = request.form['timestamp']
+        verdict = request.form['verdict']
+        photo = request.files['photo']
+
+
+        exam_ref = db.collection('Exams').document(exam_id)
+        exam_doc = exam_ref.get()
+
+        if not exam_doc.exists:
+            return jsonify({'error': 'Exam not found'}), 404
+        
+        if not timestamp:
+            return jsonify({'error': 'Timestamp cannot be empty'}), 400
+        if not verdict:
+            return jsonify({'error': 'Verdict cannot be empty'}), 400
+        if not photo:
+            return jsonify({'error': 'Photo cannot be empty'}), 400
+        
+        exam_data = exam_doc.to_dict()
+        if not exam_data['isTaken']:
+            return jsonify({'error': 'Exam is not started yet'}), 400        
+
+        photo_filename = str(uuid.uuid4()) + os.path.splitext(photo.filename)[-1]
+        photo_url = upload_to_gcs(photo, photo_filename, "photos", True)
+
+        activity = {
+            'timestamp': timestamp,
+            'verdict': verdict,
+            'proof': photo_url
+        }        
+
+        exam_data['activity'].append(activity) 
+
+        exam_ref.update({'activity': exam_data['activity']})
+
+        return jsonify({'message': 'Activity added'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/add_video', methods=['POST'])
+def add_video():
+    try:
+        exam_id = request.form['examID']
+        video = request.files['video']
+        
+        if not exam_id:
+            return jsonify({'error': 'Exam ID cannot be empty'}), 400
+        if not video:
+            return jsonify({'error': 'Video cannot be empty'}), 400
+    
+
+        exam_ref = db.collection('Exams').document(exam_id)
+        exam_doc = exam_ref.get()
+
+        if not exam_doc.exists:
+            return jsonify({'error': 'Exam not found'}), 404
+
+        exam_data = exam_doc.to_dict()
+        if not exam_data['isTaken']:
+            return jsonify({'error': 'Exam is not started yet'}), 400
+
+        video_filename = str(uuid.uuid4()) + os.path.splitext(video.filename)[-1]
+        video_url = upload_to_gcs(video, video_filename, "videos", True)
+
+        exam_ref.update({'videoLink': video_url})
+
+        return jsonify({'message': 'Video added'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
