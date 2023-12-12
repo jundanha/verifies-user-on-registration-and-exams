@@ -18,24 +18,24 @@ from pose_estimation import PoseEstimator
 from utils import refine
 
 # Parse arguments from user input.
-parser = ArgumentParser()
-parser.add_argument("--video", type=str, default=None,
-                    help="Video file to be processed.")
-parser.add_argument("--cam", type=int, default=0,
-                    help="The webcam index.")
-args = parser.parse_args()
+# parser = ArgumentParser()
+# parser.add_argument("--video", type=str, default=None,
+#                     help="Video file to be processed.")
+# parser.add_argument("--cam", type=int, default=0,
+#                     help="The webcam index.")
+# args = parser.parse_args()
 
 
-print(__doc__)
-print("OpenCV version: {}".format(cv2.__version__))
+# print(__doc__)
+# print("OpenCV version: {}".format(cv2.__version__))
 
 
-def run_head_pose_estimation():
+def run_head_pose_estimation(src):
     # Before estimation started, there are some startup works to do.
 
     # Initialize the video source from webcam or video file.
-    video_src = args.cam if args.video is None else args.video
-    # video_src = './jundan.mp4'
+    # video_src = args.cam if args.video is None else args.video
+    video_src = src
     cap = cv2.VideoCapture(video_src)
     print(f"Video source: {video_src}")
 
@@ -127,7 +127,7 @@ def run_head_pose_estimation():
         cv2.imshow("Preview", frame)
         if cv2.waitKey(1) == 27:
             break
-    return frame
+    # return frame
 
-if __name__ == '__main__':
-    run_head_pose_estimation()
+# if __name__ == '__main__':
+#     run_head_pose_estimation()

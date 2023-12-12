@@ -42,11 +42,12 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
-def generate_frames(src):
+def generate_frames(src, examID = '0000'):
     # Before estimation started, there are some startup works to do.
 
     # Initialize the video source from webcam or video file.
     # video_src = args.cam if args.video is None else args.video
+    ID = examID
     video_src = src
     cap = cv2.VideoCapture(video_src)
     print(f"Video source: {video_src}")
@@ -154,15 +155,26 @@ def generate_frames(src):
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-        socketio.emit('predictions', prediction + ' || ' + 'pred_val : ' + pred_str)
+        # socketio.emit('predictions', prediction + ' || ' + 'pred_val : ' + pred_str + ID)
+        
+        data = {
+            'examID' = '',
+            'timestamp' = '',
+            'verdict' = '',
+            
+        }
+        
+        files = {'photo' : open(photo_path, 'rb')}
+        
+        response = request.post(localhost:5000/add_avtivity, data=data, files=files)
 
-@app.route('/video_feed')
-def video_feed():
-    src = 'https://storage.googleapis.com/c23-capstone-project-bucket/videos/WIN_20231211_10_44_04_Pro.mp4'
-    # src = 0
-    return Response(generate_frames(src),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+# @app.route('/video_feed')
+# def video_feed():
+#     src = 'https://storage.googleapis.com/c23-capstone-project-bucket/videos/WIN_20231211_10_44_04_Pro.mp4'
+#     # src = 0
+#     return Response(generate_frames(src),
+#                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == "__main__":
-    socketio.run(app, port=3000, debug=True)
-    # app.run(debug=True)
+# if __name__ == "__main__":
+#     socketio.run(app, port=3000, debug=True)
+#     # app.run(debug=True)
