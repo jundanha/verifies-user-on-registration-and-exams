@@ -1,5 +1,8 @@
 from flask import Flask, render_template, Response
 import cv2
+from flask_socketio import SocketIO
+from flask_cors import CORS
+from io import BytesIO
 # from main import run_head_pose_estimation  # Replace 'your_module' with the actual module where your 'run' function is defined
 """Demo code showing how to estimate human head pose.
 
@@ -33,6 +36,7 @@ print(__doc__)
 print("OpenCV version: {}".format(cv2.__version__))
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 @app.route('/')
 def index():
@@ -80,6 +84,7 @@ def generate_frames(src):
 
         # Any valid face found?
         if len(faces) > 0:
+            # print(faces)
             tm.start()
 
             # Step 2: Detect landmarks. Crop and feed the face area into the
@@ -106,12 +111,26 @@ def generate_frames(src):
 
             # All done. The best way to show the result would be drawing the
             # pose on the frame in realtime.
+            pred_str = str(pose)
             print("Estimated Pose (rotation, translation):")
-            if pose[0][0] < -0.7:
+            if pose[0][0] < -0.5 or pose[1][0]>70 and pose[1][1] > -70:
+                # pred_str = str(pose[0][0])
+                prediction = 'Facing left'
+                
                 print('facing left :', pose[0][0])
-            elif pose[0][0] > 0.7:
+            elif pose[0][0] > 0.5:
+                # pred_str = str(pose[0][0])
+                prediction = 'Facing right'
+                
                 print('facing Right :', pose[0][0])
+            elif pose[1][1] < -70:
+                prediction = 'Heads Down'
+            elif pose[1][1] > 5:
+                prediction = 'Heads Up'
             else:
+                # pred_str = str(pose[1])
+                prediction = 'On Focus'
+                
                 print('Pose Orientation :', pose)
                 
             # Do you want to see the pose annotation?
@@ -135,12 +154,15 @@ def generate_frames(src):
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        socketio.emit('predictions', prediction + ' || ' + 'pred_val : ' + pred_str)
 
 @app.route('/video_feed')
 def video_feed():
     src = 'https://storage.googleapis.com/c23-capstone-project-bucket/videos/WIN_20231211_10_44_04_Pro.mp4'
+    # src = 0
     return Response(generate_frames(src),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, port=3000, debug=True)
+    # app.run(debug=True)
