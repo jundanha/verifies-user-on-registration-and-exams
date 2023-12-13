@@ -4,6 +4,7 @@
   &nbsp;&nbsp;&nbsp;&nbsp;1. Face verification and comparison on registration, starting exam, and project submission <br>
   &nbsp;&nbsp;&nbsp;&nbsp;2. Gesture recognition and tracking on exam.  </p>
 
+## Team Members
 | ID          | Name                    |
 | ----------- | ----------------------- |
 | C002BSY3390 | Jundan Haris            |
@@ -43,7 +44,7 @@ To set up and run the project locally, clone the repository first using command<
 3. Install required packages: `pip install Flask Flask-CORS google-cloud-storage firebase-admin`
 4. Run the Flask server: `python App.py`
 
-Remenber, to run the backend, you need credentials.json
+Remember, to run the backend, you need credentials.json
 
 <h3>Thank You.</h3>
 <p>With Love, C23-VU01 Team</p>
