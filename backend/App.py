@@ -7,7 +7,7 @@ import os
 import uuid
 from tensorflow.keras import backend as K
 from gesture_tracker.gesture import run_head_pose_estimation
-# from face_recog.FaceCheck import run
+from face_recog.FaceCheck import run_face_check
 import requests
 
 app = Flask(__name__)
@@ -74,7 +74,7 @@ def create_exam():
         exam_ref = db.collection('Exams').add(new_exam)
         exam_id = exam_ref[1].id
 
-        return jsonify({'examID': exam_id, 'token': new_exam['token']}), 200
+        return jsonify({'examID': exam_id, 'token': new_exam['token'], 'photo': new_exam['faceRegistered']}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -113,7 +113,8 @@ def submit_face():
 
         exam_ref = db.collection('Exams').document(exam_id)
         exam_doc = exam_ref.get()
-
+        
+        
         if not exam_doc.exists:
             return jsonify({'error': 'Exam not found'}), 404
 
@@ -121,19 +122,22 @@ def submit_face():
         if not exam_data['isTaken']:
             return jsonify({'error': 'Exam is not started yet'}), 400
 
+        face_registered_url = exam_data['faceRegistered']
         photo = request.files['photo']
 
         photo_filename = str(uuid.uuid4()) + os.path.splitext(photo.filename)[-1]
         photo_url = upload_to_gcs(photo, photo_filename, "photos", True)
 
+        # if not photo_url:
+        #     return jsonify({'error': 'Image not valid'}), 400
         exam_ref.update({'faceAtExam': photo_url})
 
 
 
         # TODO: Call face recognition API
-        # result, isMatch = generate_frame(photo1, photo2)
+        result, isMatch = run_face_check(face_registered_url, photo_url)
 
-        # return jsonify({'message': 'Face image submitted', 'faceResult': result, 'isMatch': isMatch}), 200
+        return jsonify({'message': 'Face image submitted', 'faceResult': result, 'isMatch': isMatch}), 200
 
         # TODO: update exam_ref with faceResult, isMatch
 

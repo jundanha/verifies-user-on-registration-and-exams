@@ -111,10 +111,25 @@ def face_detection(image):
         # No face detected
         return None
 
-def run(img1_url, img2_url):
-    img1 = cv2.imread(img1_url)
-    img2 = cv2.imread(img2_url)
-# Make a prediction using the trained model
+import requests
+
+def load_image_from_url(url):
+    response = requests.get(url)
+    image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
+    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+    return image
+
+def run_face_check(img1_url, img2_url):
+    if img1_url.startswith('http'):
+        img1 = load_image_from_url(img1_url)
+    else:
+        img1 = cv2.imread(img1_url)
+        
+    if img2_url.startswith('http'):
+        img2 = load_image_from_url(img2_url)
+    else:
+        img2 = cv2.imread(img2_url)
+        
     detected_face1 = face_detection2(img1)
     detected_face2 = face_detection2(img2)
     
@@ -127,8 +142,8 @@ def run(img1_url, img2_url):
     else:
         isMatch = False
         
-    return (prediction[0], isMatch)
-# Print the prediction
-    # print("Similarity Score:", prediction[0][0])
+    return (str(prediction[0][0]), isMatch)
 
-# run("../tes_img/koko4.jpeg", '../tes_img/chaeryoeong.jpg')
+#Usage Example
+# img_url = 'https://storage.googleapis.com/c23-capstone-project-bucket/photos/4bc34f7b-5485-415d-a8c0-54332f09f3a2.jpg'
+# run_face_check(img_url, '../tes_img/chaeryoeong.jpg')
