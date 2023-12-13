@@ -1,0 +1,20 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+<script src="webcam.js"></script>
+</head>
+<body>
+	<input type="file" id="fileInput">
+    <img id="imageElement" style="display:flex;max-width:500px">
+	<div>
+		<div>
+			<video autoplay playsinline muted id="wc" width="300" height="300"></video>
+		</div>
+	</div>
+	<button type="button" id="startPredicting" onclick="startPredicting()" >Start Predicting</button>
+	<button type="button" id="stopPredicting" onclick="stopPredicting()" >Stop Predicting</button>
+	<div id="prediction"></div>
+</body>
+
+<script src="index.js"></script>
+</html>

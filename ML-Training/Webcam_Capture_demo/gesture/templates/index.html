@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ... (existing code) ... -->
+  </head>
+  <body>
+    <h1>Eye Gaze Prediction</h1>
+    <img
+      src="{{ url_for('video_feed') }}"
+      width="640"
+      height="480"
+      style="border: 1px solid #000"
+    />
+    <div>
+      <h2>Predictions:</h2>
+      <p id="predictions">Loading...</p>
+    </div>
+
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- Add the following script at the end of the body -->
+    <script>
+      // Function to update the predictions element with new data
+      function updatePredictions(predictions) {
+        document.getElementById("predictions").innerText =
+          "Predictions: " + predictions;
+      }
+
+      // Start WebSocket connection to update predictions in real-time
+      const socket = io.connect(
+        "http://" + document.domain + ":" + location.port
+      );
+      socket.on("predictions", function (data) {
+        updatePredictions(data);
+      });
+    </script>
+  </body>
+</html>
