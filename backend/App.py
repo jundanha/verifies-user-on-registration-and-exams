@@ -150,12 +150,12 @@ def submit_face():
 
         # TODO: Call face recognition API
         result, isMatch = run_face_check(face_registered_url, photo_url)
-
-        return jsonify({'message': 'Face image submitted', 'faceResult': result, 'isMatch': isMatch}), 200
+        
 
         # TODO: update exam_ref with faceResult, isMatch
-
-        # return jsonify({'message': 'Face image submitted'}), 200
+        exam_ref.update({'isMatch':isMatch, 'faceResult':result})
+        
+        return jsonify({'message': 'Face image submitted', 'faceResult': result, 'isMatch': isMatch}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
