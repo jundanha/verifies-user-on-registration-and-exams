@@ -4,11 +4,14 @@ from google.cloud import storage
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import numpy as np
+import cv2
 import uuid
 from tensorflow.keras import backend as K
 from gesture_tracker.gesture import run_head_pose_estimation
-from face_recog.FaceCheck import run_face_check
+from face_recog.FaceCheck import run_face_check, face_detection2
 import requests
+from io import BytesIO
 
 app = Flask(__name__)
 CORS(app)
@@ -35,20 +38,6 @@ def upload_to_gcs(file, file_name, type, isPublic):
         blob.make_public()
     return blob.public_url
 
-def upload_to_gcs_photo(file, file_name, type, isPublic):
-    bucket_name = "c23-capstone-project-bucket"
-    bucket = storage_client.bucket(bucket_name)
-    if type == "photos":
-        blob = bucket.blob("photos/" + file_name)
-    elif type == "videos":
-        blob = bucket.blob("videos/" + file_name)
-    else:
-        blob = bucket.blob(file_name)
-    blob.upload_from_string(file.read().decode('utf-8'), content_type=file.content_type)
-    if isPublic:
-        blob.make_public()
-    return blob.public_url
-
 @app.route('/create_exam', methods=['POST'])
 def create_exam():
     try:
@@ -56,9 +45,22 @@ def create_exam():
             return jsonify({'error': 'No photo provided'}), 400
 
         photo = request.files['photo']
+        print(type(photo)) #<class 'werkzeug.datastructures.file_storage.FileStorage'>
+        nparr = np.frombuffer(photo.read(), dtype=np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        #example Usage of face Detection
+        #image = cv2.imread(img1_url)
+        face = face_detection2(image)
+
+        dummy_file = BytesIO()
+        dummy_file.write(cv2.imencode('.jpg', cv2.cvtColor(face, cv2.COLOR_RGB2BGR))[1].tobytes())
+        dummy_file.seek(0)
+        dummy_file.content_type = 'image/jpeg'
+        dummy_file.filename = 'detected_face.jpg'
         
         photo_filename = str(uuid.uuid4()) + os.path.splitext(photo.filename)[-1]
-        photo_url = upload_to_gcs(photo, photo_filename, "photos", True)
+        photo_url = upload_to_gcs(dummy_file, photo_filename, "photos", True)
 
         new_exam = {
             'token': str(uuid.uuid4()),
@@ -74,7 +76,7 @@ def create_exam():
         exam_ref = db.collection('Exams').add(new_exam)
         exam_id = exam_ref[1].id
 
-        return jsonify({'examID': exam_id, 'token': new_exam['token'], 'photo': new_exam['faceRegistered']}), 200
+        return jsonify({'examID': exam_id, 'token': new_exam['token']}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -124,9 +126,21 @@ def submit_face():
 
         face_registered_url = exam_data['faceRegistered']
         photo = request.files['photo']
+        nparr = np.frombuffer(photo.read(), dtype=np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        #example Usage of face Detection
+        #image = cv2.imread(img1_url)
+        face = face_detection2(image)
 
+        dummy_file = BytesIO()
+        dummy_file.write(cv2.imencode('.jpg', cv2.cvtColor(face, cv2.COLOR_RGB2BGR))[1].tobytes())
+        dummy_file.seek(0)
+        dummy_file.content_type = 'image/jpeg'
+        dummy_file.filename = 'detected_face.jpg'
+        
         photo_filename = str(uuid.uuid4()) + os.path.splitext(photo.filename)[-1]
-        photo_url = upload_to_gcs(photo, photo_filename, "photos", True)
+        photo_url = upload_to_gcs(dummy_file, photo_filename, "photos", True)
 
         # if not photo_url:
         #     return jsonify({'error': 'Image not valid'}), 400
@@ -234,8 +248,8 @@ def add_video():
         
         if not exam_id:
             return jsonify({'error': 'Exam ID cannot be empty'}), 400
-        # if not video:
-        #     return jsonify({'error': 'Video cannot be empty'}), 400
+        if not video:
+            return jsonify({'error': 'Video cannot be empty'}), 400
     
 
         exam_ref = db.collection('Exams').document(exam_id)

@@ -185,5 +185,5 @@ def run_head_pose_estimation(src, exam_id):
         
     # return frame
 
-if __name__ == '__main__':
-    run_head_pose_estimation()
+# if __name__ == '__main__':
+#     run_head_pose_estimation()

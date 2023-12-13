@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from mtcnn import MTCNN
+from PIL import Image
 import os
 # from keras import ops
 
@@ -61,6 +62,8 @@ def preprocess_frame(frame):
 
     return normalize_frame
 
+#example Usage
+#image = cv2.imread(img1_url)
 def face_detection2(image):
     detector = MTCNN()
     result = detector.detect_faces(image)
@@ -80,10 +83,9 @@ def face_detection2(image):
         
         # # Close the window
         # cv2.destroyAllWindows()
-        
         return detected_face
     else:
-        # No face detected
+    #     # No face detected
         return None
     
 def face_detection(image):
@@ -105,7 +107,7 @@ def face_detection(image):
         # Close the window
         cv2.destroyAllWindows()
         
-        return detected_face
+        return (detected_face)
     
     else:
         # No face detected
@@ -130,11 +132,11 @@ def run_face_check(img1_url, img2_url):
     else:
         img2 = cv2.imread(img2_url)
         
-    detected_face1 = face_detection2(img1)
-    detected_face2 = face_detection2(img2)
+    # detected_face1 = face_detection2(img1)
+    # detected_face2 = face_detection2(img2)
     
-    face1 = preprocess_frame(detected_face1)
-    face2 = preprocess_frame(detected_face2)
+    face1 = preprocess_frame(img1)
+    face2 = preprocess_frame(img2)
     
     prediction = model.predict([face1, face2])
     if prediction[0] < 0.5:
