@@ -24,6 +24,16 @@ function FaceRecognitionPage() {
   const [isPredictLoading, setPredictLoading] = useState(false);
   const [value, setValue] = useState('');
   const [isMatch, setIsMatch] = useState(false);
+  const [examID, setExamID] = useState('');
+
+  useEffect(() => {
+    const savedExamID = localStorage.getItem('examID');
+    if (savedExamID) {
+      setExamID(savedExamID);
+    } else {
+      window.location.href = '/';
+    }
+  }, []);
 
   useEffect(() => {
     const enableCamera = async () => {
@@ -268,7 +278,8 @@ function FaceRecognitionPage() {
             <Button
               colorScheme="blue"
               as={RouterLink}
-              to='/streamvideo'
+              // to='/streamvideo'
+              to='/uploadvideo'
               mx='2'
             >
               Next
