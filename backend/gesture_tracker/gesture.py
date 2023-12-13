@@ -17,18 +17,8 @@ from .mark_detection import MarkDetector
 from .pose_estimation import PoseEstimator
 from .utils import refine
 import os
-
-# Parse arguments from user input.
-# parser = ArgumentParser()
-# parser.add_argument("--video", type=str, default=None,
-#                     help="Video file to be processed.")
-# parser.add_argument("--cam", type=int, default=0,
-#                     help="The webcam index.")
-# args = parser.parse_args()
-
-
-# print(__doc__)
-# print("OpenCV version: {}".format(cv2.__version__))
+import time
+import requests
 
 
 # Get the directory of the current script
@@ -40,7 +30,7 @@ relative_path2 = "assets/face_landmarks.onnx"
 face_model_path = os.path.join(current_dir, relative_path1)
 mark_model_path = os.path.join(current_dir, relative_path2)
 
-def run_head_pose_estimation(src):
+def run_head_pose_estimation(src, exam_id):
     # Before estimation started, there are some startup works to do.
 
     # Initialize the video source from webcam or video file.
@@ -65,6 +55,9 @@ def run_head_pose_estimation(src):
     # Measure the performance with a tick meter.
     tm = cv2.TickMeter()
 
+    start_time = time.time()
+    counter = 0
+    
     # Now, let the frames flow.
     while True:
 
@@ -72,7 +65,16 @@ def run_head_pose_estimation(src):
         frame_got, frame = cap.read()
         if frame_got is False:
             break
-
+        
+        #Add TimeStamp of from the Video Captured
+        timestamp = cap.get(cv2.CAP_PROP_POS_MSEC)
+        timestamp_sec = int(timestamp / 1000)  # Convert milliseconds to seconds
+        hours = timestamp_sec // 3600
+        minutes = (timestamp_sec % 3600) // 60
+        seconds = (timestamp_sec % 60)
+        # print(f"Timestamp: {hours:02d}:{minutes:02d}:{seconds:02d}:{timestamp:.2f}")
+        # print(f"Timestamp : {timestamp} ms")
+        
         # If the frame comes from webcam, flip it so it looks like a mirror.
         if video_src == 0:
             frame = cv2.flip(frame, 2)
@@ -108,17 +110,57 @@ def run_head_pose_estimation(src):
 
             # All done. The best way to show the result would be drawing the
             # pose on the frame in realtime.
-            print("Estimated Pose (rotation, translation):")
-            if pose[0][0] < -0.7:
-                print('facing left :', pose[0][0])
-            elif pose[0][0] > 0.7:
-                print('facing Right :', pose[0][0])
-            else:
-                print('Pose Orientation :', pose)
-                
+            # print("Estimated Pose (rotation, translation):")
+        
             # Do you want to see the pose annotation?
             pose_estimator.visualize(frame, pose, color=(0, 255, 0))
 
+            #Check The Behavior at Some Interval
+            elapsed_time = time.time() - start_time
+            timestamp_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            if elapsed_time >= 1:
+                start_time = time.time()
+                if pose[0][0] < -0.5 or pose[1][0]>70 and pose[1][1] > -70:
+                # pred_str = str(pose[0][0])
+                    prediction = 'Facing left'
+                    counter += 1
+                elif pose[0][0] > 0.5:
+                # pred_str = str(pose[0][0])
+                    prediction = 'Facing right'
+                    counter += 1
+                # print('facing Right :', pose[0][0])
+                elif pose[1][1] < -70:
+                    prediction = 'Heads Down'
+                    counter += 1
+                elif pose[1][1] > 10:
+                    prediction = 'Heads Up'
+                    counter += 1
+                else:
+                # pred_str = str(pose[1])
+                    prediction = 'On Focus'
+                    counter = 0
+                # print('Pose Orientation :', pose)
+                if counter > 5:
+                    counter = 0
+                    # print(prediction, timestamp_str)
+                    data = {
+                    'examID' : exam_id,
+                    'timestamp' : timestamp_str,
+                    'verdict' : prediction,
+            
+                    }
+                    # Convert the frame to a byte array
+                    _, frame_binary = cv2.imencode('.jpg', frame)
+
+                    # Create the files dictionary with the encoded frame
+                    files = {'photo': ('frame.jpg', frame_binary.tobytes(), 'image/jpeg')}
+        
+                    response = requests.post('http://localhost:5000/add_activity', data=data, files=files)
+                    # if response.text:
+                    #     print("Response is not empty")
+                    # else:
+                    #     print("Response is empty")
+                
             # Do you want to see the axes?
             # pose_estimator.draw_axes(frame, pose)
 
@@ -129,14 +171,18 @@ def run_head_pose_estimation(src):
             # face_detector.visualize(frame, faces)
 
         # Draw the FPS on screen.
+        # Convert the timestamp to a string format.
+        # timestamp_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        cv2.putText(frame, f"Timestamp: {timestamp_str}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
         cv2.rectangle(frame, (0, 0), (90, 30), (0, 0, 0), cv2.FILLED)
         cv2.putText(frame, f"FPS: {tm.getFPS():.0f}", (10, 20),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
+                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
 
-        # Show preview.
+        # # # # Show preview.
         cv2.imshow("Preview", frame)
         if cv2.waitKey(1) == 27:
             break
+        
     # return frame
 
 if __name__ == '__main__':

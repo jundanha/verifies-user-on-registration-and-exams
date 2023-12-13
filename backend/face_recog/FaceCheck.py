@@ -74,12 +74,12 @@ def face_detection2(image):
         cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
         
         detected_face = image[y:y+h, x:x+w]
-        cv2.imshow("Detected Face", detected_face)
-                # Wait for a key press before continuing
-        cv2.waitKey(0)
+        # cv2.imshow("Detected Face", detected_face)
+        #         # Wait for a key press before continuing
+        # cv2.waitKey(0)
         
-        # Close the window
-        cv2.destroyAllWindows()
+        # # Close the window
+        # cv2.destroyAllWindows()
         
         return detected_face
     else:
@@ -122,8 +122,12 @@ def run(img1_url, img2_url):
     face2 = preprocess_frame(detected_face2)
     
     prediction = model.predict([face1, face2])
-    
-    return print('pred values :', prediction)
+    if prediction[0] < 0.5:
+        isMatch = True
+    else:
+        isMatch = False
+        
+    return (prediction[0], isMatch)
 # Print the prediction
     # print("Similarity Score:", prediction[0][0])
 

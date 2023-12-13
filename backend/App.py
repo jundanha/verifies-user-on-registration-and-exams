@@ -5,6 +5,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 import uuid
+from tensorflow.keras import backend as K
+from gesture_tracker.gesture import run_head_pose_estimation
+# from face_recog.FaceCheck import run
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -27,6 +31,20 @@ def upload_to_gcs(file, file_name, type, isPublic):
     else:
         blob = bucket.blob(file_name)
     blob.upload_from_string(file.read(), content_type=file.content_type)
+    if isPublic:
+        blob.make_public()
+    return blob.public_url
+
+def upload_to_gcs_photo(file, file_name, type, isPublic):
+    bucket_name = "c23-capstone-project-bucket"
+    bucket = storage_client.bucket(bucket_name)
+    if type == "photos":
+        blob = bucket.blob("photos/" + file_name)
+    elif type == "videos":
+        blob = bucket.blob("videos/" + file_name)
+    else:
+        blob = bucket.blob(file_name)
+    blob.upload_from_string(file.read().decode('utf-8'), content_type=file.content_type)
     if isPublic:
         blob.make_public()
     return blob.public_url
@@ -212,8 +230,8 @@ def add_video():
         
         if not exam_id:
             return jsonify({'error': 'Exam ID cannot be empty'}), 400
-        if not video:
-            return jsonify({'error': 'Video cannot be empty'}), 400
+        # if not video:
+        #     return jsonify({'error': 'Video cannot be empty'}), 400
     
 
         exam_ref = db.collection('Exams').document(exam_id)
@@ -230,6 +248,8 @@ def add_video():
         video_url = upload_to_gcs(video, video_filename, "videos", True)
 
         exam_ref.update({'videoLink': video_url})
+        
+        run_head_pose_estimation(video_url, exam_id)
 
         return jsonify({'message': 'Video added'}), 200
 
