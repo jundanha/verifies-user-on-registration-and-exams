@@ -1,2 +1,11 @@
 runtime: nodejs20
-service: default
+service: frontend
+handlers:
+  # Serve static files with url ending with a file extension
+  - url: /(.*\..+)$
+    static_files: dist/\1
+    upload: dist/.*\..+$
+  # Catch all handler to index.html
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html
