@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./notfound";
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button, Heading, Image, Link, Table, TableContainer, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Heading, Image, Table, TableContainer, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import html2pdf from 'html2pdf.js';
+
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function ExamDetailPage() {
   const { examID } = useParams();
   const [ exam, setExam ] = useState();
+  const contentRef = useRef(null);
 
   useEffect(() => {
 
@@ -37,9 +40,29 @@ function ExamDetailPage() {
     )
   }
 
+  const downloadPDF = () => {
+    const content = contentRef.current;
+
+    if (!content) {
+      console.error('Content not found for PDF generation');
+      return;
+    }
+
+    const pdfOptions = {
+      margin: 0,
+      filename: `exam_report_${examID}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, 
+        allowTaint: true, },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    html2pdf().from(content).set(pdfOptions).save();
+  }
 
   return (
     <Box
+      ref={contentRef} 
       bgGradient="linear(to-tr, #B6FFFA, #687EFF)"
       w="100%" minH="100vh"
       p={3}
@@ -97,8 +120,12 @@ function ExamDetailPage() {
           </Text>
           <Image
             src={exam.faceRegistered}
+            crossorigin="*"
             alt="face at exam"
             maxH={"100px"}
+            onError={(e) => {
+              e.target.src = "https://img.icons8.com/ios/50/user-male-circle--v1.png";
+            }}
           /> 
         </Box>
         <Box
@@ -119,8 +146,12 @@ function ExamDetailPage() {
           </Text>
           <Image
             src={exam.faceAtExam}
+            crossorigin="*"
             alt="face at exam"
             maxH={"100px"}
+            onError={(e) => {
+              e.target.src = "https://img.icons8.com/ios/50/user-male-circle--v1.png";
+            }}
           />   
         </Box>
       </Box>
@@ -179,14 +210,16 @@ function ExamDetailPage() {
                   <Th>{activity.timestamp}</Th>
                   <Th>{activity.verdict}</Th>
                   <Th>
-                    <Link
-                      href={activity.proof}
-                      isExternal
-                      color="blue.500"
-                      textDecoration={"underline"}
-                    >
-                      View
-                    </Link>
+                    <Image
+                      src={activity.proof}
+                      crossOrigin="*"
+                      alt="face at exam"
+                      maxH={"100px"}
+                      onError={(e) => {
+                        e.target.src = "https://img.icons8.com/ios/50/user-male-circle--v1.png";
+                      }}
+
+                    />
                   </Th>
                 </Tr>
               ))}
@@ -206,6 +239,7 @@ function ExamDetailPage() {
           colorScheme="blue"
           size="lg"
           w="200px"
+          onClick={downloadPDF}
         >
           Download This Report
         </Button> 

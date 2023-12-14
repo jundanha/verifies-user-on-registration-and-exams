@@ -25,6 +25,7 @@ For the frontend part, our tech stack includes:
 - <b>Chakra UI </b>
 - <b>Formik</b>
 - <b>React webcam</b>
+- <b>html2pdf</b>
 
 ### Backend
 
