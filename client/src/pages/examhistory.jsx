@@ -2,13 +2,15 @@ import { Box, Button, Card, Heading, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { Link as RouterLink } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function ExamHistoryPage() {
   const [examHistory, setExamHistory] = useState([])
 
   useEffect(() => {
     const fetchExamHistory = async () => {
       try {
-        const response = await fetch('http://localhost:5000/list_exams');
+        const response = await fetch(`${API_URL}/list_exams`);
         if (!response.ok) {
           throw new Error(`Failed to fetch exam history. Status: ${response.status}`);
         }

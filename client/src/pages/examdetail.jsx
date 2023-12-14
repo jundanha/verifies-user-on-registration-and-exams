@@ -4,84 +4,31 @@ import NotFoundPage from "./notfound";
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Heading, Image, Link, Table, TableContainer, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function ExamDetailPage() {
-  const dummy = { 
-    examID : "aGHaV1YLaNnyhLTfzfNT",
-    isTaken : true,
-    faceRegistered: "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png",
-    faceAtExam : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png",
-    faceResult : 0.98762,
-    isMatch : true,
-    activity : [
-      {
-        time : "10:00:00",
-        verdict : "menoleh ke kanan",
-        proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      },
-      {
-        time : "10:00:00",
-        verdict : "menoleh ke kanan",
-        proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      },
-      {
-        time : "10:09:00",
-        verdict : "tidak ada wajah terdeteksi",
-        proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      },
-      // {
-      //   time : "10:10:00",
-      //   verdict : "lorem ipsum dolor sit amet",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:00:00",
-      //   verdict : "menoleh ke kanan",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:00:00",
-      //   verdict : "menoleh ke kanan",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:09:00",
-      //   verdict : "tidak ada wajah terdeteksi",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:10:00",
-      //   verdict : "lorem ipsum dolor sit amet",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:00:00",
-      //   verdict : "menoleh ke kanan",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:00:00",
-      //   verdict : "menoleh ke kanan",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:09:00",
-      //   verdict : "tidak ada wajah terdeteksi",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // },
-      // {
-      //   time : "10:10:00",
-      //   verdict : "lorem ipsum dolor sit amet",
-      //   proof : "https://storage.googleapis.com/c23-capstone-project-bucket/photos/1d1473e0-5492-494b-8822-2b1e2f1a8cab.png"
-      // }
-    ]
-
-  }
-
   const { examID } = useParams();
   const [ exam, setExam ] = useState();
 
   useEffect(() => {
-    setExam(dummy)
+
+    const fetchExam = async () => {
+      try {
+        const response = await fetch(`${API_URL}/get_exam?examID=${examID}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch exam. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setExam(data.exam);
+      
+      } catch (error) {
+        console.error('Error fetching exam:', error);
+      }
+    }
+
+    fetchExam();
   }, [])
 
   if (!exam) {
@@ -227,9 +174,9 @@ function ExamDetailPage() {
               </Tr>
             </Thead>
             <Tbody>
-              {exam.activity.map((activity, index) => (
+              {exam.activity && exam.activity.map((activity, index) => (
                 <Tr key={index}>
-                  <Th>{activity.time}</Th>
+                  <Th>{activity.timestamp}</Th>
                   <Th>{activity.verdict}</Th>
                   <Th>
                     <Link

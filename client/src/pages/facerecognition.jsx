@@ -12,6 +12,8 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function FaceRecognitionPage() {
   const videoRef = useRef();
   const webcamRef = useRef(null);
@@ -114,13 +116,25 @@ function FaceRecognitionPage() {
     
         const formData = new FormData();
         formData.append('photo', imageBlob, 'captured_image.jpg'); 
+        formData.append('examID', examID);
 
-        // TODO : Call API to predict the photo
+        const response = await fetch(`${API_URL}/submit_face`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to predict. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        setValue(data.faceResult);
+        if (data.isMatch === true) {
+          setIsMatch(true);
+        } else {
+          setIsMatch(false);
+        }
 
-        setValue('Loading...');
-        setIsMatch(false);
         onOpen();
-
     }
     catch (error) {
       console.error('Error registering exam:', error);

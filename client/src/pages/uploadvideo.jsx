@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Box, Button, FormControl, Heading, Input } from "@chakra-ui/react";
 import { Link as RouterLink } from 'react-router-dom';
 
-function UploadVideoPage() {
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
+function UploadVideoPage() {
   const [examID, setExamID] = useState('');
 
   useEffect(() => {

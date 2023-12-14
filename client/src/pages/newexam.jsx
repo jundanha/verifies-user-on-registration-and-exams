@@ -12,6 +12,8 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function NewExamPage() {
   const videoRef = useRef();
   const webcamRef = useRef(null);
@@ -104,12 +106,11 @@ function NewExamPage() {
       const formData = new FormData();
       formData.append('photo', imageBlob, 'captured_image.jpg'); 
       
-      // TODO : change the url to the deployed backend
-      const response = await fetch('http://localhost:5000/create_exam', {
+      const response = await fetch(`${API_URL}/create_exam`, {
         method: 'POST',
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to register exam. Status: ${response.status}`);
       }

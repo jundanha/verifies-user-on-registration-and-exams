@@ -11,12 +11,13 @@ import {
 import { Field, Form, Formik } from 'formik';
 import { Link as RouterLink } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function StartExamPage() {
   async function handleSubmit(values, actions) {
     try {
       console.log(values.token)
-      //  TODO : change the url to the deployed backend
-      const response = await fetch('http://localhost:5000/start_exam', {
+      const response = await fetch(`${API_URL}/start_exam`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
