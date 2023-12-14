@@ -42,7 +42,7 @@ with custom_object_scope({'contrastive_loss' : contrastive_loss}):
     try:
         # Load your Keras model
         print("Loading model...")
-        model = load_model(model_path)
+        model = load_model(model_path, custom_objects={'safe_mode': False, 'contrastive_loss': contrastive_loss})
         print("Model loaded successfully.")
     except Exception as e:
         print(f"Error loading model: {e}")
