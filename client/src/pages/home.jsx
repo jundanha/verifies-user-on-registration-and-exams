@@ -46,7 +46,7 @@ function HomePage() {
             fontFamily={"sans-serif"}
             fontStyle={"italic"}
           >
-            <div> Welcome to our prototype website showcasing the user registration and verification during exams, featuring real-time face and gesture recognition.</div>
+            <div> Welcome to our prototype website showcasing the user registration and verification during exams, featuring face and gesture recognition.</div>
             <div>‼️This website is a prototype created solely for demonstration purposes. All functionalities presented here are simulated and aimed at showcasing the potential of these technologies.‼️</div>
             </Text>
           <Text
