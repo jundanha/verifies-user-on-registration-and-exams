@@ -173,15 +173,15 @@ def run_head_pose_estimation(src, exam_id):
         # Draw the FPS on screen.
         # Convert the timestamp to a string format.
         # timestamp_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-        cv2.putText(frame, f"Timestamp: {timestamp_str}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        cv2.rectangle(frame, (0, 0), (90, 30), (0, 0, 0), cv2.FILLED)
-        cv2.putText(frame, f"FPS: {tm.getFPS():.0f}", (10, 20),
-                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
+        # cv2.putText(frame, f"Timestamp: {timestamp_str}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        # cv2.rectangle(frame, (0, 0), (90, 30), (0, 0, 0), cv2.FILLED)
+        # cv2.putText(frame, f"FPS: {tm.getFPS():.0f}", (10, 20),
+        #              cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
 
-        # # # # Show preview.
-        cv2.imshow("Preview", frame)
-        if cv2.waitKey(1) == 27:
-            break
+        # Show preview.
+        # cv2.imshow("Preview", frame)
+        # if cv2.waitKey(1) == 27:
+        #     break
         
     # return frame
 
