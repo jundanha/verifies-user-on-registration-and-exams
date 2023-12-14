@@ -95,6 +95,17 @@ function ExamDetailPage() {
           Exams-{examID}
         </Heading>
       </Box>
+      <Text
+        fontSize="2xl"
+        fontWeight="bold"
+        color="white"
+        fontFamily={"sans-serif"}
+        alignSelf={"flex-start"}
+      >
+        {
+          exam.isTaken ? "Exam Taken" : "Exam Not Taken"
+        }
+      </Text>
       <Box
         display='flex'
         flexDir='row'
