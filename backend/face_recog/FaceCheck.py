@@ -6,10 +6,11 @@ from tensorflow.keras import backend as K
 from mtcnn import MTCNN
 from PIL import Image
 import os
+from keras.applications.inception_resnet_v2 import preprocess_input
 # from keras import ops
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-relative_path = "./snn_tru_v1.h5"
+relative_path = "./snn_ResNetV2_v1.h5"
 model_path = os.path.join(current_dir, relative_path)
 def read_img(path):
     img = image.load_img(path, target_size=(224, 224))
@@ -36,7 +37,7 @@ def contrastive_loss(y_true, y_pred):
 from tensorflow.keras.models import load_model
 from keras.utils import custom_object_scope
 
-with custom_object_scope({'contrastrive_loss' : contrastive_loss}):
+with custom_object_scope({'contrastive_loss' : contrastive_loss}):
     # Load your Keras model
     try:
         # Load your Keras model
@@ -57,8 +58,9 @@ def preprocess_frame(frame):
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # Preprocess the frame
-    rgb_frame = cv2.resize(rgb_frame, (128, 128))
-    normalize_frame = rgb_frame.reshape(1, 128, 128, 3) / 255.0
+    rgb_frame = cv2.resize(rgb_frame, (224, 224))
+    re_frame = rgb_frame.reshape(1, 224, 224, 3)
+    normalize_frame = preprocess_input(re_frame)
 
     return normalize_frame
 
