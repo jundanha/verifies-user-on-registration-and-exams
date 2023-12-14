@@ -76,7 +76,7 @@ function NewExamPage() {
     setCapturedImage(imageSrc);
     setCaptureDisabled(true);
     setRegisterDisabled(false);
-    console.log(imageSrc);
+    // console.log(imageSrc);
   };
 
   const registerExam = async () => {

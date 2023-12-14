@@ -87,7 +87,7 @@ function FaceRecognitionPage() {
     setCapturedImage(imageSrc);
     setCaptureDisabled(true);
     setPredictDisabled(false);
-    console.log(imageSrc);
+    // console.log(imageSrc);
   };
 
   const PredictFace = async () => {
