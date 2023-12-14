@@ -120,7 +120,7 @@ function ExamDetailPage() {
           </Text>
           <Image
             src={exam.faceRegistered}
-            crossorigin="*"
+            // crossOrigin="*"
             alt="face at exam"
             maxH={"100px"}
             onError={(e) => {
@@ -146,7 +146,7 @@ function ExamDetailPage() {
           </Text>
           <Image
             src={exam.faceAtExam}
-            crossorigin="*"
+            // crossOrigin="*"
             alt="face at exam"
             maxH={"100px"}
             onError={(e) => {
@@ -212,7 +212,7 @@ function ExamDetailPage() {
                   <Th>
                     <Image
                       src={activity.proof}
-                      crossOrigin="*"
+                      // crossOrigin="*"
                       alt="face at exam"
                       maxH={"100px"}
                       onError={(e) => {
