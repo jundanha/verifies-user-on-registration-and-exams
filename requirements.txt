@@ -9,3 +9,7 @@ opencv-python==4.5.4.60
 packaging==23.1
 protobuf==4.23.2
 sympy==1.12
+Flask 
+Flask-CORS 
+google-cloud-storage 
+firebase-admin

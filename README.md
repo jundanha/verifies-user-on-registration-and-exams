@@ -5,6 +5,7 @@
   &nbsp;&nbsp;&nbsp;&nbsp;2. Gesture recognition and tracking on exam.  </p>
 
 ## Team Members
+
 | ID          | Name                    |
 | ----------- | ----------------------- |
 | C002BSY3390 | Jundan Haris            |
@@ -13,35 +14,42 @@
 | M002BSX1474 | Kezia Nathania Novaleni |
 
 ## Tech Stack Used
+
 ### Frontend
+
 For the frontend part, our tech stack includes:
-- <b>Vite</b> 
-- <b>React</b> 
-- <b>React router</b> 
-- <b>Chakra UI </b> 
-- <b>Formik</b> 
-- <b>React webcam</b> 
+
+- <b>Vite</b>
+- <b>React</b>
+- <b>React router</b>
+- <b>Chakra UI </b>
+- <b>Formik</b>
+- <b>React webcam</b>
 
 ### Backend
+
 The backend of our system is implemented using <b>Flask</b>, <b>Firebase</b> for authentication and storage, and <b>Google Cloud Storage</b> for file uploads.
 
-
 ## Deployment
+
 Both frontend and backend, we use <b>Google Cloud App Engine</b> for deployment.
 
 ## Getting Started
+
 To set up and run the project locally, clone the repository first using command<br>
-```git clone https://github.com/jundanha/verifies-user-on-registration-and-exams.git```<br>
+`git clone https://github.com/jundanha/verifies-user-on-registration-and-exams.git`<br>
 
 ### Run the frontend
+
 1. Navigate to frontend directory: `cd client`
 2. Install dependencies: `npm install`
 3. Run development server: `npm run dev`
 
 ### Run the backend
+
 1. Ensure you have python installed.
 2. Navigate to backend directory: `cd backend`
-3. Install required packages: `pip install Flask Flask-CORS google-cloud-storage firebase-admin`
+3. Install required packages: `pip install install -r requirements.txt`
 4. Run the Flask server: `python App.py`
 
 Remember, to run the backend, you need credentials.json
