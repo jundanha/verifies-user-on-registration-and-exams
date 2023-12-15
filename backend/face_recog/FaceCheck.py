@@ -1,10 +1,8 @@
-from keras.preprocessing import image
 import cv2
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from mtcnn import MTCNN
-from PIL import Image
 import os
 from keras.applications.inception_resnet_v2 import preprocess_input
 # from keras import ops
@@ -12,11 +10,6 @@ from keras.applications.inception_resnet_v2 import preprocess_input
 current_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = "./snn_ResNetV2_v1.h5"
 model_path = os.path.join(current_dir, relative_path)
-def read_img(path):
-    img = image.load_img(path, target_size=(224, 224))
-    img = np.array(img).astype(np.float32)
-    img = img/255.0
-    return img
 
 def euclidean_distance(vects):
     x, y = vects
