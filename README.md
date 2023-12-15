@@ -17,8 +17,8 @@
 
 ### Datasets:
 
-Face Recognition : chaitanyakasaraneni/recognisingfacesinthewild: Kaggle competition by Northeastern SMILE Lab - Recognizing Faces in the Wild (github.com)
-Gesture Recognition : Synthetic Gaze and Face Segmentation (kaggle.com)
+Face Recognition : chaitanyakasaraneni/recognisingfacesinthewild: Kaggle competition by Northeastern SMILE Lab - Recognizing Faces in the Wild (github.com) - https://github.com/chaitanyakasaraneni/recognisingfacesinthewild
+Gesture Recognition : Synthetic Gaze and Face Segmentation (kaggle.com) - https://www.kaggle.com/datasets/allexmendes/synthetic-gaze-and-face-segmentation
 
 ### References:
 
