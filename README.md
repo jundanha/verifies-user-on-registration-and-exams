@@ -13,7 +13,35 @@
 | M002BSY0514 | Agung Kurniawan         |
 | M002BSX1474 | Kezia Nathania Novaleni |
 
+## Machine Learning
+
+### Datasets:
+
+Face Recognition : chaitanyakasaraneni/recognisingfacesinthewild: Kaggle competition by Northeastern SMILE Lab - Recognizing Faces in the Wild (github.com)
+Gesture Recognition : Synthetic Gaze and Face Segmentation (kaggle.com)
+
+### References:
+
+https://medium.com/@rinkinag24/a-comprehensive-guide-to-siamese-neural-networks-3358658c0513
+
+Rane, M. et al. (2023). Real-Time Automated Face Recognition System for Online Exam Examinee Verification. In: Laouar, M.R., Balas, V.E., Lejdel, B., Eom, S., Boudia, M.A. (eds) 12th International Conference on Information Systems and Advanced Technologies “ICISAT 2022”. ICISAT 2022. Lecture Notes in Networks and Systems, vol 624. Springer, Cham. https://doi.org/10.1007/978-3-031-25344-7_34
+
+Singh, A. and Das, S. (2022) ‘A cheating detection system in online examinations based on the analysis of eye-gaze and head-pose’, Proceedings of The International Conference on Emerging Trends in Artificial Intelligence and Smart Systems, THEETAS 2022, 16-17 April 2022, Jabalpur, India [Preprint]. doi:10.4108/eai.16-4-2022.2318165.
+
 ## Tech Stack Used
+
+### Machine Learning
+
+for machine learning task we are using:
+
+- <b>TensorFlow</b>
+- <b>OpenCV</b>
+- <b>MTCNN</b> for face detections
+- <b>keras</b>
+
+credit to : https://github.com/yinguobing/head-pose-estimation
+
+- <b>Head_pose_estimation</b> models
 
 ### Frontend
 
